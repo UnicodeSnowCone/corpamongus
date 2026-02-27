@@ -3,7 +3,8 @@ const Network = (() => {
   let ws = null;
   let handlers = {};
   let reconnectAttempts = 0;
-  const MAX_RECONNECT = 5;
+  let pendingMessages = []; // Queue messages if socket isn't open yet
+  const MAX_RECONNECT = 10;
 
   function connect() {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -13,6 +14,11 @@ const Network = (() => {
       console.log('Connected to server');
       reconnectAttempts = 0;
       if (handlers.connected) handlers.connected();
+      // Flush any queued messages
+      while (pendingMessages.length > 0) {
+        const msg = pendingMessages.shift();
+        ws.send(msg);
+      }
     };
 
     ws.onmessage = (event) => {
@@ -30,7 +36,9 @@ const Network = (() => {
       console.log('Disconnected');
       if (reconnectAttempts < MAX_RECONNECT) {
         reconnectAttempts++;
-        setTimeout(connect, 1000 * reconnectAttempts);
+        const delay = Math.min(1000 * reconnectAttempts, 5000);
+        console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts})...`);
+        setTimeout(connect, delay);
       }
       if (handlers.disconnected) handlers.disconnected();
     };
@@ -41,9 +49,23 @@ const Network = (() => {
   }
 
   function send(type, data = {}) {
+    const msg = JSON.stringify({ type, ...data });
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type, ...data }));
+      ws.send(msg);
+    } else if (ws && ws.readyState === WebSocket.CONNECTING) {
+      // Socket is still connecting — queue it
+      pendingMessages.push(msg);
+    } else {
+      // Socket is closed/closing — reconnect and queue
+      console.warn('WebSocket not open, queuing message and reconnecting...');
+      pendingMessages.push(msg);
+      reconnectAttempts = 0;
+      connect();
     }
+  }
+
+  function isConnected() {
+    return ws && ws.readyState === WebSocket.OPEN;
   }
 
   function on(type, handler) {
@@ -54,5 +76,5 @@ const Network = (() => {
     delete handlers[type];
   }
 
-  return { connect, send, on, off };
+  return { connect, send, on, off, isConnected };
 })();

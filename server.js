@@ -1041,9 +1041,26 @@ server.on('upgrade', (req, socket, head) => {
     `Sec-WebSocket-Accept: ${accept}\r\n\r\n`
   );
 
-  const ws = { socket, readyState: 1, buffer: Buffer.alloc(0) };
+  const ws = { socket, readyState: 1, buffer: Buffer.alloc(0), lastPong: Date.now() };
   const clientId = generateId();
   clients.set(ws, { id: clientId, lobbyCode: null });
+
+  // Keepalive: ping every 20 seconds, drop if no pong in 40s
+  const pingInterval = setInterval(() => {
+    if (ws.readyState !== 1) { clearInterval(pingInterval); return; }
+    if (Date.now() - ws.lastPong > 40000) {
+      // No pong in 40s — connection dead
+      clearInterval(pingInterval);
+      ws.readyState = 3;
+      socket.destroy();
+      return;
+    }
+    // Send ping frame
+    const ping = Buffer.alloc(2);
+    ping[0] = 0x89; // FIN + ping opcode
+    ping[1] = 0;
+    try { socket.write(ping); } catch { }
+  }, 20000);
 
   socket.on('data', (chunk) => {
     ws.buffer = Buffer.concat([ws.buffer, chunk]);
@@ -1059,11 +1076,16 @@ server.on('upgrade', (req, socket, head) => {
         return;
       }
       if (frame.opcode === 0x09) {
-        // Ping -> Pong
+        // Ping from client -> Pong
         const pong = Buffer.alloc(2);
         pong[0] = 0x8a;
         pong[1] = 0;
         socket.write(pong);
+        continue;
+      }
+      if (frame.opcode === 0x0a) {
+        // Pong from client (response to our ping)
+        ws.lastPong = Date.now();
         continue;
       }
       if (frame.opcode === 0x01) {
@@ -1074,6 +1096,7 @@ server.on('upgrade', (req, socket, head) => {
 
   socket.on('close', () => {
     ws.readyState = 3;
+    clearInterval(pingInterval);
     const client = clients.get(ws);
     if (client && client.lobbyCode) {
       const lobby = lobbies.get(client.lobbyCode);

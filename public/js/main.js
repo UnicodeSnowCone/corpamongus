@@ -10,6 +10,9 @@ const Main = (() => {
     document.getElementById('btn-create').onclick = () => {
       const name = getPlayerName();
       if (!name) return;
+      if (!Network.isConnected()) {
+        showError('Connecting to server... try again in a moment');
+      }
       Network.send('create_lobby', { name, archetype: 'intern' });
     };
 
@@ -24,6 +27,9 @@ const Main = (() => {
       if (!code || code.length !== 4) {
         showError('Enter a 4-letter lobby code');
         return;
+      }
+      if (!Network.isConnected()) {
+        showError('Connecting to server... try again in a moment');
       }
       Network.send('join_lobby', { name, code, archetype: 'intern' });
     };
