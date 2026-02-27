@@ -8,10 +8,22 @@ set -e
 echo "🏢 Corporate Among Us — Server Setup"
 echo "======================================"
 
+# 0. Wait for any running unattended-upgrades to finish
+echo "⏳ Waiting for any background updates to finish..."
+sudo systemctl stop unattended-upgrades 2>/dev/null || true
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+  echo "   Package manager is locked — waiting 5s..."
+  sleep 5
+done
+
+# Prevent the "restart daemons?" interactive prompt
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+
 # 1. Update system
 echo "📦 Updating system packages..."
-sudo apt-get update -y
-sudo apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # 2. Install Node.js 20 LTS
 echo "📦 Installing Node.js 20 LTS..."
@@ -71,8 +83,10 @@ mkdir -p "$APP_DIR/logs"
 # 6. Open port 3000 in the firewall (iptables)
 echo "🔓 Configuring firewall..."
 sudo iptables -I INPUT -p tcp --dport 3000 -j ACCEPT
-# Persist iptables rules
-sudo apt-get install -y iptables-persistent
+# Persist iptables rules (pre-answer the interactive prompts)
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
 sudo netfilter-persistent save
 
 # 7. Start the app
