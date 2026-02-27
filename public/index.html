@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Corporate Among Us</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- ═══ TITLE SCREEN ═══ -->
+  <div id="screen-title" class="screen active">
+    <div class="title-container">
+      <div class="title-bean">
+        <div class="bean-body" style="background:#F44336"></div>
+        <div class="bean-visor"></div>
+        <div class="bean-briefcase"></div>
+      </div>
+      <h1 class="game-title">CORPORATE<br><span>AMONG US</span></h1>
+      <p class="subtitle">Who's getting fired today?</p>
+      <div class="title-buttons">
+        <button id="btn-create" class="btn btn-primary">CREATE LOBBY</button>
+        <button id="btn-join" class="btn btn-secondary">JOIN LOBBY</button>
+      </div>
+      <div id="join-form" class="hidden">
+        <input type="text" id="input-code" placeholder="ENTER CODE" maxlength="4" autocomplete="off">
+        <button id="btn-join-submit" class="btn btn-primary">JOIN</button>
+      </div>
+      <div id="name-form">
+        <input type="text" id="input-name" placeholder="YOUR NAME" maxlength="12" autocomplete="off">
+      </div>
+      <div id="error-msg" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- ═══ LOBBY SCREEN ═══ -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-container">
+      <h2>LOBBY <span id="lobby-code" class="lobby-code"></span></h2>
+      <p class="lobby-hint">Share this code with friends!</p>
+      <div id="archetype-select" class="archetype-grid"></div>
+      <div id="player-list" class="player-list"></div>
+      <button id="btn-start" class="btn btn-primary hidden">START GAME (need 4+)</button>
+      <p id="waiting-msg" class="lobby-hint">Waiting for host to start...</p>
+    </div>
+  </div>
+
+  <!-- ═══ ROLE REVEAL ═══ -->
+  <div id="screen-role" class="screen">
+    <div class="role-reveal">
+      <h2 id="role-title"></h2>
+      <p id="role-subtitle"></p>
+      <div id="role-bean" class="role-bean"></div>
+    </div>
+  </div>
+
+  <!-- ═══ GAME SCREEN ═══ -->
+  <div id="screen-game" class="screen">
+    <canvas id="game-canvas"></canvas>
+    <div id="hud">
+      <div id="hud-top">
+        <div id="task-bar-container">
+          <div id="task-bar"></div>
+          <span id="task-bar-text">Tasks</span>
+        </div>
+        <div id="sabotage-alert" class="hidden">⚠️ <span id="sabotage-text"></span></div>
+      </div>
+      <div id="hud-bottom">
+        <button id="btn-use" class="hud-btn hidden">USE (E)</button>
+        <button id="btn-report" class="hud-btn btn-report hidden">REPORT</button>
+        <button id="btn-kill" class="hud-btn btn-kill hidden">FIRE (Q)</button>
+        <button id="btn-sabotage" class="hud-btn btn-sabotage hidden">SABOTAGE</button>
+        <button id="btn-vent" class="hud-btn btn-vent hidden">MAIL CHUTE</button>
+        <button id="btn-emergency" class="hud-btn btn-emergency hidden">🔔 MEETING</button>
+        <button id="btn-map" class="hud-btn">MAP (M)</button>
+        <button id="btn-tasks" class="hud-btn">TASKS (T)</button>
+      </div>
+      <div id="kill-cooldown" class="hidden"></div>
+    </div>
+    <!-- Task overlay -->
+    <div id="task-overlay" class="overlay hidden">
+      <div id="task-content" class="overlay-box"></div>
+    </div>
+    <!-- Map overlay -->
+    <div id="map-overlay" class="overlay hidden">
+      <div class="overlay-box map-box">
+        <h3>Office Map</h3>
+        <canvas id="minimap-canvas" width="480" height="360"></canvas>
+        <button class="btn btn-secondary" onclick="document.getElementById('map-overlay').classList.add('hidden')">CLOSE</button>
+      </div>
+    </div>
+    <!-- Task list overlay -->
+    <div id="tasklist-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h3>Your Tasks</h3>
+        <ul id="task-list-items"></ul>
+        <button class="btn btn-secondary" onclick="document.getElementById('tasklist-overlay').classList.add('hidden')">CLOSE</button>
+      </div>
+    </div>
+    <!-- Sabotage menu -->
+    <div id="sabotage-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h3>SABOTAGE</h3>
+        <div class="sabotage-grid">
+          <button class="sab-btn" data-sab="lights">💡 Lights Out</button>
+          <button class="sab-btn" data-sab="wifi">📡 WiFi Down</button>
+          <button class="sab-btn" data-sab="coffee">☕ Coffee Machine</button>
+          <button class="sab-btn" data-sab="fire_drill">🔥 Fire Drill</button>
+        </div>
+        <button class="btn btn-secondary" onclick="document.getElementById('sabotage-overlay').classList.add('hidden')">CANCEL</button>
+      </div>
+    </div>
+    <!-- Ghost overlay -->
+    <div id="ghost-overlay" class="hidden">
+      <div class="ghost-banner">👻 YOU HAVE BEEN FIRED — You are now a ghost. Finish your tasks!</div>
+    </div>
+  </div>
+
+  <!-- ═══ MEETING SCREEN ═══ -->
+  <div id="screen-meeting" class="screen">
+    <div class="meeting-container">
+      <div class="meeting-header">
+        <h2 id="meeting-title">📢 ALL-HANDS MEETING</h2>
+        <p id="meeting-subtitle"></p>
+        <div id="meeting-timer" class="meeting-timer"></div>
+      </div>
+      <div id="meeting-players" class="meeting-players"></div>
+      <div id="chat-area" class="chat-area">
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Type a message..." maxlength="200" autocomplete="off">
+          <button id="btn-chat-send" class="btn btn-primary">SEND</button>
+        </div>
+      </div>
+      <div id="vote-area" class="hidden">
+        <button id="btn-skip-vote" class="btn btn-secondary">SKIP VOTE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MEETING RESULT ═══ -->
+  <div id="screen-result" class="screen">
+    <div class="result-container">
+      <div id="result-bean" class="result-bean"></div>
+      <h2 id="result-text"></h2>
+      <p id="result-role"></p>
+    </div>
+  </div>
+
+  <!-- ═══ GAME OVER SCREEN ═══ -->
+  <div id="screen-gameover" class="screen">
+    <div class="gameover-container">
+      <h1 id="gameover-title"></h1>
+      <p id="gameover-msg"></p>
+      <div id="gameover-roles"></div>
+      <button id="btn-play-again" class="btn btn-primary hidden">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script src="/js/network.js"></script>
+  <script src="/js/player.js"></script>
+  <script src="/js/map.js"></script>
+  <script src="/js/tasks.js"></script>
+  <script src="/js/voting.js"></script>
+  <script src="/js/hud.js"></script>
+  <script src="/js/game.js"></script>
+  <script src="/js/lobby.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

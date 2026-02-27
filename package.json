@@ -1,0 +1,10 @@
+{
+  "name": "corporate-among-us",
+  "version": "1.0.0",
+  "description": "Among Us but in the corporate world — zero-dependency real-time multiplayer browser game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}

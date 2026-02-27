@@ -1,0 +1,644 @@
+/* ═══ Corporate Among Us — Styles ═══ */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-dark: #1a1a2e;
+  --bg-mid: #16213e;
+  --bg-light: #0f3460;
+  --accent: #e94560;
+  --accent2: #ff9800;
+  --accent3: #4CAF50;
+  --text: #ffffff;
+  --text-dim: #a0a0c0;
+  --card: rgba(255,255,255,0.08);
+  --card-hover: rgba(255,255,255,0.15);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ─── Screens ─── */
+.screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  display: none; justify-content: center; align-items: center;
+  flex-direction: column;
+}
+.screen.active { display: flex; }
+.hidden { display: none !important; }
+
+/* ─── Buttons ─── */
+.btn {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.1rem;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--accent); color: white; }
+.btn-secondary { background: var(--card); color: white; border: 2px solid rgba(255,255,255,0.2); }
+
+/* ─── Title Screen ─── */
+#screen-title {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+.title-container {
+  text-align: center;
+  animation: fadeInUp 0.6s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.game-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 4rem;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  text-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+}
+.game-title span {
+  color: var(--accent);
+  font-size: 4.5rem;
+}
+.subtitle {
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+/* Title bean character */
+.title-bean {
+  width: 100px; height: 130px;
+  position: relative;
+  margin: 0 auto 20px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.bean-body {
+  width: 80px; height: 100px;
+  border-radius: 40px 40px 30px 30px;
+  position: absolute; top: 10px; left: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.bean-visor {
+  width: 40px; height: 24px;
+  background: #b3e5fc;
+  border-radius: 20px 20px 8px 8px;
+  position: absolute; top: 22px; left: 38px;
+  border: 3px solid rgba(0,0,0,0.2);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+}
+.bean-briefcase {
+  width: 20px; height: 16px;
+  background: #795548;
+  border-radius: 3px;
+  position: absolute; bottom: 15px; right: 0;
+  border: 2px solid #5D4037;
+}
+
+.title-buttons {
+  display: flex; gap: 16px; justify-content: center; margin-bottom: 20px;
+}
+
+#name-form, #join-form {
+  margin-top: 12px;
+}
+input[type="text"] {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.2rem;
+  padding: 12px 20px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  background: var(--card);
+  color: white;
+  text-align: center;
+  outline: none;
+  text-transform: uppercase;
+  width: 200px;
+}
+input[type="text"]::placeholder { color: var(--text-dim); text-transform: none; }
+input[type="text"]:focus { border-color: var(--accent); }
+
+.error-msg {
+  color: var(--accent);
+  font-weight: 700;
+  margin-top: 12px;
+  min-height: 24px;
+}
+
+/* ─── Lobby Screen ─── */
+#screen-lobby {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+}
+.lobby-container {
+  text-align: center;
+  max-width: 700px;
+  width: 90%;
+}
+.lobby-container h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+.lobby-code {
+  background: var(--accent);
+  padding: 4px 16px;
+  border-radius: 8px;
+  letter-spacing: 4px;
+  font-size: 2.4rem;
+}
+.lobby-hint {
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+/* Archetype grid */
+.archetype-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.archetype-card {
+  width: 70px; height: 90px;
+  border-radius: 12px;
+  border: 3px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.archetype-card:hover { border-color: rgba(255,255,255,0.4); transform: scale(1.05); }
+.archetype-card.selected { border-color: var(--accent2); box-shadow: 0 0 12px rgba(255,152,0,0.5); }
+.archetype-card.taken { opacity: 0.3; cursor: not-allowed; }
+.archetype-card canvas { width: 100%; height: 100%; }
+.archetype-label {
+  position: absolute; bottom: 2px; left: 0; right: 0;
+  font-size: 0.55rem; font-weight: 800;
+  text-align: center; color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Player list */
+.player-list {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center; margin: 20px 0;
+}
+.player-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  min-width: 140px;
+}
+.player-card canvas { width: 40px; height: 50px; }
+.player-card .pname { font-weight: 700; }
+.player-card .host-badge {
+  background: var(--accent2);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+/* ─── Role Reveal ─── */
+#screen-role {
+  background: var(--bg-dark);
+  z-index: 100;
+}
+.role-reveal {
+  text-align: center;
+  animation: roleReveal 0.8s ease;
+}
+@keyframes roleReveal {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+#role-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+#role-subtitle {
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+.role-bean { width: 120px; height: 160px; margin: 0 auto; }
+.role-bean canvas { width: 100%; height: 100%; }
+
+/* ─── Game Screen ─── */
+#screen-game { background: #1a1a2e; }
+#game-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  image-rendering: auto;
+}
+
+/* HUD */
+#hud { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+#hud > * { pointer-events: auto; }
+#hud-top {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+#task-bar-container {
+  width: 280px; height: 28px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+#task-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent3), #81C784);
+  width: 0%;
+  transition: width 0.5s ease;
+  border-radius: 14px;
+}
+#task-bar-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 0.75rem; font-weight: 800;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+#sabotage-alert {
+  background: rgba(233,69,96,0.9);
+  padding: 6px 20px;
+  border-radius: 8px;
+  font-weight: 800;
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+#hud-bottom {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.hud-btn {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.85rem;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid rgba(255,255,255,0.2);
+  transition: all 0.2s;
+}
+.hud-btn:hover { background: rgba(255,255,255,0.15); }
+.btn-kill { background: rgba(233,69,96,0.8) !important; border-color: var(--accent) !important; }
+.btn-report { background: rgba(255,152,0,0.8) !important; border-color: var(--accent2) !important; }
+.btn-sabotage { background: rgba(156,39,176,0.8) !important; border-color: #9C27B0 !important; }
+.btn-vent { background: rgba(96,125,139,0.8) !important; border-color: #607D8B !important; }
+.btn-emergency { background: rgba(255,193,7,0.8) !important; border-color: #FFC107 !important; color: #333 !important; }
+
+#kill-cooldown {
+  position: absolute; bottom: 70px; right: 16px;
+  background: rgba(0,0,0,0.7);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ─── Overlays ─── */
+.overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 50;
+}
+.overlay-box {
+  background: var(--bg-mid);
+  border: 3px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+.overlay-box h3 {
+  font-family: 'Fredoka One', sans-serif;
+  margin-bottom: 16px;
+}
+.map-box { max-width: 540px; }
+#minimap-canvas { border-radius: 8px; width: 100%; background: #2a2a3e; margin-bottom: 12px; }
+
+/* Task list */
+#task-list-items {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 16px;
+}
+#task-list-items li {
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  background: var(--card);
+  font-weight: 600;
+}
+#task-list-items li.done {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+#task-list-items li .task-room {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  display: block;
+}
+
+/* Sabotage */
+.sabotage-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+}
+.sab-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  padding: 16px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  background: var(--card);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sab-btn:hover { background: rgba(233,69,96,0.3); border-color: var(--accent); }
+
+/* Ghost */
+#ghost-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; pointer-events: none;
+}
+.ghost-banner {
+  text-align: center;
+  background: rgba(0,0,0,0.7);
+  padding: 8px;
+  font-weight: 700;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+/* ─── Meeting Screen ─── */
+#screen-meeting {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2a1a3e 100%);
+  z-index: 80;
+}
+.meeting-container {
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.meeting-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.meeting-header h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.8rem;
+}
+.meeting-timer {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 2rem;
+  color: var(--accent2);
+}
+.meeting-players {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; margin-bottom: 16px;
+}
+.meeting-player {
+  background: var(--card);
+  border: 3px solid transparent;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 130px;
+}
+.meeting-player:hover { border-color: var(--accent); }
+.meeting-player.dead { opacity: 0.3; cursor: default; }
+.meeting-player.voted { border-color: var(--accent3); }
+.meeting-player.selected { border-color: var(--accent); background: rgba(233,69,96,0.2); }
+.meeting-player canvas { width: 35px; height: 44px; }
+.meeting-player .mp-name { font-weight: 700; font-size: 0.9rem; }
+.meeting-player .mp-votes {
+  background: var(--accent);
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 800;
+  margin-left: auto;
+}
+
+/* Chat */
+.chat-area { margin-bottom: 12px; }
+.chat-messages {
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 12px;
+  height: 150px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+.chat-msg {
+  margin: 4px 0;
+  font-size: 0.85rem;
+}
+.chat-msg .chat-name {
+  font-weight: 800;
+  margin-right: 6px;
+}
+.chat-input-area { display: flex; gap: 8px; }
+#chat-input {
+  flex: 1;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  background: var(--card);
+  color: white;
+  outline: none;
+  text-transform: none;
+  text-align: left;
+  width: auto;
+}
+
+#vote-area { text-align: center; }
+
+/* ─── Result Screen ─── */
+#screen-result {
+  background: rgba(0,0,0,0.85);
+  z-index: 90;
+}
+.result-container { text-align: center; animation: fadeInUp 0.5s ease; }
+.result-bean { width: 100px; height: 130px; margin: 0 auto 16px; }
+.result-bean canvas { width: 100%; height: 100%; }
+#result-text {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+#result-role { color: var(--text-dim); font-size: 1.1rem; }
+
+/* ─── Game Over ─── */
+#screen-gameover {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+  z-index: 100;
+}
+.gameover-container { text-align: center; animation: fadeInUp 0.6s ease; }
+#gameover-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+#gameover-msg {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+#gameover-roles {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; margin-bottom: 24px;
+}
+.role-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.role-card canvas { width: 35px; height: 44px; }
+.role-card .rc-name { font-weight: 700; }
+.role-card .rc-role {
+  font-size: 0.75rem; font-weight: 800;
+  padding: 2px 8px; border-radius: 4px;
+}
+.rc-impostor { background: var(--accent); }
+.rc-crewmate { background: var(--accent3); }
+
+/* ─── Task Mini-games ─── */
+.task-game {
+  padding: 20px;
+}
+.task-game h3 {
+  font-family: 'Fredoka One', sans-serif;
+  margin-bottom: 16px;
+}
+.task-game .task-instructions {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.task-game .task-area {
+  min-height: 150px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+.click-target {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--accent);
+  position: absolute;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.1s;
+  animation: pop 0.3s ease;
+}
+@keyframes pop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+.click-target:hover { transform: scale(1.1); }
+
+.form-field {
+  display: flex; align-items: center; gap: 8px; margin: 8px 0;
+}
+.form-field label {
+  font-weight: 700; font-size: 0.85rem; min-width: 100px; text-align: right;
+}
+.form-field input, .form-field select {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: var(--card);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  outline: none;
+  text-align: left;
+  text-transform: none;
+  width: auto;
+}
+.form-field select option { background: var(--bg-mid); }
+
+.toggle-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--card);
+  margin: 6px 0;
+  cursor: pointer;
+}
+.toggle-row:hover { background: var(--card-hover); }
+.toggle-check {
+  width: 24px; height: 24px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.toggle-check.active { background: var(--accent3); border-color: var(--accent3); }
+
+.time-slot {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--card);
+  margin: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.time-slot:hover { background: var(--accent3); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .game-title { font-size: 2.5rem; }
+  .game-title span { font-size: 3rem; }
+  .lobby-code { font-size: 1.8rem; }
+  .hud-btn { font-size: 0.7rem; padding: 8px 12px; }
+  .meeting-player { min-width: 100px; padding: 8px; }
+}
